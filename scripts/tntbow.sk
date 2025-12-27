@@ -1,0 +1,25 @@
+command /tntbow:
+    permission: *
+    trigger:
+        give player 1 bow of infinity ,power 5,flame 1,unbreaking 1, named "&4T&fN&4T &4B&fO&4W" 
+
+on shoot:
+  set metadata tag "name" of projectile to name of shooter's tool
+  if difference between {cooldown::%shooter%} and now < 2 second:
+    send action bar "&4Reloading for &72 &4Seconds" to shooter
+    cancel event
+    stop
+  else if difference between {cooldown::%shooter%} and now < 0 second:
+    delete {cooldown::%shooter%} 
+    stop
+
+on projectile hit:
+  metadata tag "name" of projectile is "&4T&fN&4T &4B&fO&4W"
+  if difference between {cooldown::%shooter%} and now < 2 second:
+    cancel event
+    stop
+  else:
+    spawn 3 tnt at location of projectile
+    set {cooldown::%shooter%} to now
+    kill projectile
+    stop

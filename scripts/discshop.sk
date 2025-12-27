@@ -1,0 +1,132 @@
+options:
+	head: "{display:{Name:""{\""text\"":\""Money\""}""},SkullOwner:{Id:""d90e151a-f6ca-49f3-8b44-68e7073fe8bc"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2Y4ZmQ4N2ZlN2UzNGY5MTEzZGQzODVhYWI3YjI0ZWYyMjFjMTlkNDU1MTc1YjI1NzhhZjdmZjQ2ZWVjZiJ9fX0=""}]}}}"
+
+command /discshop:
+	aliases: /ds
+	trigger:
+		set {_nbt1} to nbt compound from {@head}
+		set {_h1} to a player head with nbt {_nbt1} 
+		set metadata tag "discshop" of player to chest inventory with 4 rows named "&6&lDisc Shop!"
+		set slot 1, 2, 3, 4, 5, 6, 7, 8, 9, 17 , 18, 26, 28, 29, 30, 31, 32, 33, 34 and 35 of metadata tag "discshop" of player to lime stained glass pane named " "
+		set slot 0 of metadata tag "discshop" of player to {_h1} Named "&eYour balance&8: &a%{tokens.%player's uuid%}%"
+		set slot 10 of metadata tag "discshop" of player to record 13 named "&bBuy Music Disc 13 for &6100"
+		set slot 11 of metadata tag "discshop" of player to record cat named "&bBuy Music Disc Cat for &6100"
+		set slot 12 of metadata tag "discshop" of player to record blocks named "&bBuy Music Disc Blocks for &6100"
+		set slot 13 of metadata tag "discshop" of player to record chirp named "&bBuy Music Disc Chirp for &6100"
+		set slot 14 of metadata tag "discshop" of player to record far named "&bBuy Music Disc Far for &6100"	
+		set slot 15 of metadata tag "discshop" of player to record mall named "&bBuy Music Disc Mall for &6100"	
+		set slot 16 of metadata tag "discshop" of player to record mellohi named "&bBuy Music Disc Mellohi for &6100"	
+		set slot 19 of metadata tag "discshop" of player to record stal named "&bBuy Music Disc Stal for &6100"	
+		set slot 20 of metadata tag "discshop" of player to record strad named "&bBuy Music Disc Strad for &6100"	
+		set slot 21 of metadata tag "discshop" of player to record ward named "&bBuy Music Disc Ward for &6100"	
+		set slot 22 of metadata tag "discshop" of player to record wait named "&bBuy Music Disc Wait for &6100"	
+		set slot 23 of metadata tag "discshop" of player to record pigstep named "&bBuy Music Disc Pigstep for &6100"	
+		set slot 24 of metadata tag "discshop" of player to record 11 named "&bBuy Music Disc 11 for &6100"	
+		set slot 25 of metadata tag "discshop" of player to jukebox named "&bBuy jukebox for &650"
+		set slot 27 of metadata tag "discshop" of player to red stained glass pane named "&4Return to tokenshop"
+		open (metadata tag "discshop" of player) to player
+
+on inventory click:
+	if event-inventory = (metadata tag "discshop" of player):
+		cancel event
+		if index of event-slot is 10:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record 13
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc 13 for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc 13!"
+		if index of event-slot is 11:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record cat
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Cat for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Cat!"
+		if index of event-slot is 12:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record blocks
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Blocks for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Blocks!"
+		if index of event-slot is 13:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record chirp
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Chirp for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Chirp!"
+		if index of event-slot is 14:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record far
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Far for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Far!"
+		if index of event-slot is 15:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record mall
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Mall for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Mall!"
+		if index of event-slot is 16:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record mellohi
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Mellohi for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Mellohi!"
+		if index of event-slot is 19:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record stal
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Stal for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Stal!"
+		if index of event-slot is 20:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record strad
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Strad for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Strad!"
+		if index of event-slot is 21:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record ward
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Ward for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Ward!"
+		if index of event-slot is 22:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record wait
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Wait for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Wait!"
+		if index of event-slot is 23:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record pigstep
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc Pigstep for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc Pigstep!"
+		if index of event-slot is 24:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				give player record 11
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou bought Music Disc 11 for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy Music Disc 11!"
+		if index of event-slot is 25:
+			if {tokens.%player's uuid%} is greater than or equal to 50:
+				give player jukebox
+				remove 50 from {tokens.%player's uuid%}
+				send "&aYou bought a jukebox for 50 tokens!"
+			else:
+				send "&cYou dont have enough tokens to a jukebox!"
+		if index of event-slot is 27:
+			make player execute command "tokenshop"
+			

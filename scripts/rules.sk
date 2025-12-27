@@ -1,0 +1,33 @@
+command /rules:
+    trigger:
+        send " "
+        send "&f&lMax&a&lFarms &f&rRules!"
+        send " "
+        send "&a&l========================================"
+        send "&f&lRule &7&l(&f&l1&7&l)&f&l: &aStaff always has the final say!"
+        send "&f&lRule &7&l(&f&l2&7&l)&f&l: &aUse common sense!"
+        send "&f&lRule &7&l(&f&l3&7&l)&f&l: &aNo spamming, griefing or scamming!"
+        send "&f&lRule &7&l(&f&l4&7&l)&f&l: &aNo hacking or bug abusing!"
+        send "&f&lRule &7&l(&f&l5&7&l)&f&l: &aNo boosting & or stealing!"
+        send "&f&lRule &7&l(&f&l6&7&l)&f&l: &aDon't build things that decrease tps/ping &o&7(like lagmachines etc)"
+        send "&f&lRule &7&l(&f&l7&7&l)&f&l: &aNo advertising off any kind!"
+        send "&f&lRule &7&l(&f&l8&7&l)&f&l: &aDon't flood chat! &7(caps etc)"
+        send "&f&lRule &7&l(&f&l9&7&l)&f&l: &aNo swearing or racism/ hate speech of any kind!"
+        send "&f&lRule &7&l(&f&l10&7&l)&f&l: &aMax 2 player's on a plot trusted/added &7(1 alt or 1 friend)"
+        send "&f&lRule &7&l(&f&l11&7&l)&f&l: &aOnly talk english in chat!"
+        send "&a&l========================================"
+        send " "
+
+
+
+
+
+
+
+command /donate:
+    trigger:
+        send "<link:https://ko-fi.com/tosca4715>&aClick here to support the server!" to player
+
+command /buy:
+    trigger:
+        send "<link:https://ko-fi.com/tosca4715>&aClick here to support the server!" to player

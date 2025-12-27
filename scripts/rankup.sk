@@ -1,0 +1,79 @@
+#rankup.sk  
+
+function rankup(p: player, c: integer, add: text, remove: text, var: integer):
+  if balance of {_p} is greater or equal to {_c}:
+    remove {_c} from balance of {_p}
+    console command "lp user %{_p}% parent add %{_add}%"
+    console command "lp user %{_p}% parent remove %{_remove}%"
+    send "&aSuccesfully upgraded rank to rank %{_add}%" to {_p}
+    set {rank.%uuid of {_p}%} to {_var} + 1
+    rank({_p}, {rank.%{_p}'s uuid%})
+  else:
+    send "&cNot enough money to rankup yet" to {_p}
+    
+on join: 
+	if {badpeople::*} contains player's uuid:
+		kick player 
+		ban player
+
+function rank(p: player, i: number):
+  set metadata tag "rankup" of {_p} to chest inventory with 1 row named "&2&lRankup!"  
+  set slot 0, 1, 2, 3, 5, 6, 7 and 8 of metadata tag "rankup" of {_p} to orange stained glass pane named " "
+  if {_i} is 1:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Skilled!" with lore "&6This unlocks /craft" and "&cPrice 250k"   
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 2:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Warrior!" with lore "&6This unlocks /fly and 1 extra plot (2 total)" and "&cPrice 500k"
+    open (metadata tag "rankup" of {_p}) to {_p} 
+  else if {_i} is 3:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Superior!" with lore "&6This unlocks nothing" and "&cPrice 750k" 
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 4:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Spectre!" with lore "&6This unlocks nothing" and "&cPrice 1M" 
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 5:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Overpowered!" with lore "&6This unlocks 1 extra plot (3 total)" and "&cPrice 2M" 
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 6:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Veteran!" with lore "&6This unlocks nothing" and "&cPrice 3.5M" 
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 7:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3Overlord!" with lore "&6This unlocks nothing" and "&cPrice 4.5M" 
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 8:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3King!" with lore "&6This unlocks /hat /enderchest!" and "&cPrice 6M"
+    open (metadata tag "rankup" of {_p}) to {_p}
+  else if {_i} is 9:
+    set slot 4 of metadata tag "rankup" of {_p} to barrier named "&bRankup to &3God!" with lore "&6This unlocks /rebirth" and "&cPrice 8M" 
+    open (metadata tag "rankup" of {_p}) to {_p}  
+
+command /rankup:
+  trigger:
+    if {rank.%player's uuid%} is 10:
+      send "&cReached max rank"
+      stop
+    else:
+      rank(player, {rank.%player's uuid%})
+  
+on inventory click:
+  if name of player's inventory is "&2&lRankup!":
+    cancel event
+    if clicked slot is 4:
+      if {rank.%player's uuid%} is 1:
+        rankup(player, 250000, "Skilled", "Farmer", 1)
+      else if {rank.%player's uuid%} is 2:
+        rankup(player, 500000, "Warrior", "Skilled", 2)
+      else if {rank.%player's uuid%} is 3:
+        rankup(player, 750000, "Superior", "Warrior", 3)
+      else if {rank.%player's uuid%} is 4:
+        rankup(player, 1000000, "Spectre", "Superior", 4)
+      else if {rank.%player's uuid%} is 5:
+        rankup(player, 2000000, "Overpowered", "Spectre", 5)
+      else if {rank.%player's uuid%} is 6:
+        rankup(player, 3500000, "Veteran", "Overpowered", 6)
+      else if {rank.%player's uuid%} is 7:
+        rankup(player, 4500000, "Overlord", "Veteran", 7)
+      else if {rank.%player's uuid%} is 8:
+        rankup(player, 6000000, "King", "Overlord", 8)
+      else if {rank.%player's uuid%} is 9:
+        rankup(player, 8000000, "God", "King", 9)

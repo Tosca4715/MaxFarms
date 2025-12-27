@@ -1,0 +1,237 @@
+#!① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳
+#!Farmbot
+options:
+    prefix: "&8[<##1072c2>&lCytion&r&8] &8| "
+    infohead: "{display:{Name:""{\""text\"":\""Tourist Info\""}""},SkullOwner:{Id:[I;-1854221863,134695464,-1403011718,-1894030103],Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmEyYWZhN2JiMDYzYWMxZmYzYmJlMDhkMmM1NThhN2RmMmUyYmFjZGYxNWRhYzJhNjQ2NjJkYzQwZjhmZGJhZCJ9fX0=""}]}}}"
+
+on load:
+    set {farmbot} to dragon head named "&f『&n<##1ca372>FarmBot&r&f』" with lore " ", "&7-------------------------------------", "&2harvests stars from hand farmed crops!", "&b2 block range. ", "&7-------------------------------------" and " "
+
+
+
+function drawfarmbot(l1: location, l2: location, c: color):
+    set {_v} to vector between {_l1} and {_l2}
+    set {_d} to distance between {_l1} and {_l2}
+    loop ({_d} / 0.2) times:
+        set vector length of {_v} to (loop-value * 0.2)
+        draw 2 of dust using dustOption({_c}, 0.8) at {_l1} ~ {_v} with force
+
+
+function tokengrabbermenu(p: player, loc: location):
+    set {_nbt1} to nbt compound from {@infohead}
+    set {_h1} to a player head with nbt {_nbt1}
+    set metadata tag "FarmBot" of {_p} to chest inventory with 4 rows named "&f『&n<##10dea7>&lFarmBot&r&f』 &8&lInterface"
+    set slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 18, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 and 35 of metadata tag "FarmBot" of {_p} to gray stained glass pane named " " with all flags hidden 
+    set slot 10 of metadata tag "FarmBot" of {_p} to diamond hoe named "&3&lUpgrade Range" with lore "&8⭐10K", " ", "<##3a0096>&m                             ", "&cLevel: &70", "&aCurrent Range:&7 %{rangefarmbot::%{_loc}%} ? 2%", "<##3a0096>&m                             " and " " 
+    if {rangefarmbot::%{_loc}%} is 3:
+        set slot 10 of metadata tag "FarmBot" of {_p} to diamond hoe named "&3&lUpgrade Range" with lore "&8⭐40K ", "  ", "<##3a0096>&m                             ", "&cLevel: &71", "&aCurrent Range:&7 3", "<##3a0096>&m                             " and " " 
+    if {rangefarmbot::%{_loc}%} is 4:
+        set slot 10 of metadata tag "FarmBot" of {_p} to diamond hoe named "&3&lUpgrade Range" with lore " ", "<##3a0096>&m                             ", "&cLevel: &7Maxed", "&aCurrent Range:&7 %{rangefarmbot::%{_loc}%} ? 2%", "<##3a0096>&m                             " and " " 
+
+    set slot 12 of metadata tag "FarmBot" of {_p} to chest named "<##634102>&lUpgrade Storage" with lore "&8⭐%balformat({farmbotstoragecost::%{_loc}%} ? 5000)% (+%{farmbotstorageadded::%{_loc}%} ? 250%)", "  ", "<##3a0096>&m                                 ", "&cLevel: &7%{farmbotstoragelevel::%{_loc}%} ? 0%", "&aCurrent max amount:&7 ⭐%{farmbotstoragemax::%{_loc}%} ? 250%", "<##3a0096>&m                                 " and " "
+    
+    set slot 14 of metadata tag "FarmBot" of {_p} to lever named "&a&lClaim collected stars" with lore " ", "<##3a0096>&m                      ", "&7⭐%{farmbotstorage::%{_loc}%} ? 0%", "<##3a0096>&m                      " and " " with enchants flag hidden
+    
+    set slot 16 of metadata tag "FarmBot" of {_p} to heart of the sea of mending 1 named "&e&lstars Collected." with lore " ", "<##3a0096>&m                      ", "&7⭐%{farmbotstorage::%{_loc}%} ? 0%&7 / ⭐%{farmbotstoragemax::%{_loc}%} ? 250%", "<##3a0096>&m                      " and " " with enchants flag hidden
+    
+    set slot 20 of metadata tag "FarmBot" of {_p} to {_h1} named "&c&lGeneral info" with lore " ", "<##3a0096>&m                                                                ", "&7The farmbot collects stars from manual crops.", "&7It has upgradable storage for more stars", "&7An upgradable range to reach distant crops.", "&7Easily claim stars with a single click.", "<##3a0096>&m                                                                " and " "
+    
+    set slot 24 of metadata tag "FarmBot" of {_p} to redstone dust named "&6Pickup &f『&n<##10dea7>&lFarmBot&r&f』 " with lore " ", "<##3a0096>&m                                          ", "&cPicking up removes all upgrades.","&cAnd all stored stars ", "<##3a0096>&m                                          " and " " 
+    
+    open (metadata tag "FarmBot" of {_p}) to {_p}
+
+
+
+ 
+
+
+
+
+on inventory click:
+    if event-inventory = metadata tag "FarmBot" of player:
+        cancel event
+        if index of event-slot is 10:
+            loop {tokengrabber::locations::*}:
+                wait 1 tick
+                if {rangefarmbot::%loop-value%} is not set:
+                    if {stars::%player's uuid%} >= 10000:
+                        remove 10000 from {stars::%player's uuid%}
+                        set {rangefarmbot::%loop-value%} to 3
+                        set {rangefarmbot2::%loop-value%} to -3
+                        tokengrabbermenu(player, loop-value)
+                        stop
+                    else:
+                        send "%{@prefix}%&cNot enough stars" to player
+                        stop   
+                if {rangefarmbot::%loop-value%} is 3:
+                    if {stars::%player's uuid%} >= 40000:
+                        remove 40000 from {stars::%player's uuid%}
+                        set {rangefarmbot::%loop-value%} to 4
+                        set {rangefarmbot2::%loop-value%} to -4
+                        tokengrabbermenu(player, loop-value)
+                        stop
+                    else:
+                        send "%{@prefix}%&cNot enough stars" to player
+                        stop   
+                if {rangefarmbot::%loop-value%} is 4:
+                    send "%{@prefix}%&cMax range reached!" to player
+                    stop
+        if index of event-slot is 12:
+            loop {tokengrabber::locations::*}:
+                wait 1 tick
+                set {_loc} to loop-value
+                if {stars::%player's uuid%} >= "%{farmbotstoragecost::%{_loc}%} ? 5000%" parsed as a integer :
+                    remove {farmbotstoragecost::%{_loc}%} + 5000 from {stars::%player's uuid%}
+                    if {farmbotstorageadded::%{_loc}%} is not set:
+                        set {farmbotstorageadded::%{_loc}%} to 250
+                        set {farmbotstoragemax::%{_loc}%} to 500
+                        wait 1 tick
+                        add 5000 to {farmbotstoragecost::%{_loc}%}
+                        add 1 to {farmbotstoragelevel::%{_loc}%}
+                        send "%{@prefix}%&aSuccesfully added %{farmbotstorageadded::%{_loc}%}% &astorage space!" to player
+                        send "%{@prefix}%&aMax storage %{farmbotstoragemax::%{_loc}%}%" to player
+                        tokengrabbermenu(player, loop-value)
+                        stop
+                    if {farmbotstorageadded::%{_loc}%} is set:
+                        if {stars::%player's uuid%} >= {farmbotstoragecost::%{_loc}%}:
+                            remove {farmbotstoragecost::%{_loc}%} from {stars::%player's uuid%}
+                            add 250 + {farmbotstorageadded::%{_loc}%} to {farmbotstoragemax::%{_loc}%}
+                            set {farmbotstorageadded::%{_loc}%} to {farmbotstorageadded::%{_loc}%} + 250 
+                            wait 1 tick
+                            add 10000 to {farmbotstoragecost::%{_loc}%}
+                            add 1 to {farmbotstoragelevel::%{_loc}%}
+                            send "%{@prefix}%&aSuccesfully added %{farmbotstorageadded::%{_loc}%}% &astorage space!" to player
+                            send "%{@prefix}%&aMax storage %{farmbotstoragemax::%{_loc}%}%" to player
+                            tokengrabbermenu(player, loop-value)
+                            stop
+                        else:
+                            send "%{@prefix}%&cNot enough stars" to player
+                            stop
+                else:
+                    send "%{@prefix}%&cNot enough stars" to player
+                    stop
+        if index of event-slot is 14:
+            loop {tokengrabber::locations::*}:
+                add {farmbotstorage::%loop-value%} to {stars::%player's uuid%}
+                send "%{@prefix}%&aYou have claimed ⭐%{farmbotstorage::%loop-value%}% &astars" to player
+                set {farmbotstorage::%loop-value%} to 0
+                tokengrabbermenu(player, loop-value)
+
+
+        if index of event-slot is 24:
+            loop {tokengrabber::locations::*}:
+                wait 1 tick
+                remove loop-value from {tokengrabber::locations::*}
+                delete {rangefarmbot::%loop-value%} 
+                delete {rangefarmbot2::%loop-value%} 
+                set block at loop-value to air
+            send "%{@prefix}%&apicked up &f『&n<##1ca372>FarmBot&r&f』" to player
+            set uuid tag "Owner" of nbt of {farmbot} to uuid of player
+            give player 1 of {farmbot}
+            close player's inventory
+
+on drop of dragon head:
+    if name of event-item contains "FarmBot":
+        if uuid tag "Owner" of nbt of event-item is player's uuid:
+            set display name of event-dropped item to "&f『&n<##1ca372>FarmBot&r&f』"
+            set uuid tag "Owner" of nbt of event-dropped item to uuid of player
+        else if uuid tag "Owner" of nbt of event-item isn't player's uuid:
+            send "%{@prefix}%&cThis isn't yours thief!" to player
+            cancel event
+
+
+command /farmbot:
+    permission: *
+    trigger:
+        set uuid tag "Owner" of nbt of {farmbot} to uuid of player
+        give player 1 of {farmbot}
+        delete {tokengrabber::*}
+
+on break of dragon head:
+    if {tokengrabber::locations::*} contains location of event-block:
+        if {tokengrabber::owner::*} contains player's uuid:
+            cancel event
+            send "%{@prefix}%&cCan't pickup Farmbot this way." to player
+        else:
+            send "%{@prefix}%&cThis isn't yours thief!" to player
+            cancel event
+
+on place of dragon head:
+    if name of player's held item contains "FarmBot":
+        player can build at target block
+        if uuid tag "Owner" of nbt of player's held item is player's uuid:
+            set block at location to dragon head named "&f『&n<##1ca372>FarmBot&r&f』"
+            set {_loc} to location of event-block
+            add {_loc} to {tokengrabber::locations::*}
+            add player's uuid to {tokengrabber::owner::*}
+            set {farmbotstorage::%{_loc}%} to 0
+        else:
+            send "%{@prefix}%&cNot your &f『&n<##1ca372>FarmBot&r&f』 &cbeing boosted?" to player
+            cancel event
+
+
+on right click on dragon head:
+    if {tokengrabber::locations::*} contains location of event-block:
+        if {tokengrabber::owner::*} contains player's uuid:
+            tokengrabbermenu(player, location of event-block)
+            cancel event
+            stop
+        else:
+            send "%{@prefix}%&cThis isn't yours thief!" to player
+            cancel event
+
+every 20 seconds:
+    loop {tokengrabber::locations::*}:
+        set {_loc} to loop-value
+        if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+            wait 1 tick
+            set {_range1::*} to {rangefarmbot::%{_loc}%} ? 2
+            set {_range2::*} to {rangefarmbot2::%{_loc}%} ? -2 
+            set {_l1} to loop-value ~ vector({_range1::1}, 0, {_range1::1})
+            set {_l2} to loop-value ~ vector({_range2::1}, 0, {_range2::1}) 
+            set {_loc2} to loop-value
+            add 1 to y coord of {_loc2}
+            loop blocks within {_l1} and {_l2}:
+                if loop-block is wheat[age=7]:
+                    if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+                        drawfarmbot({_loc2}, loop-block, aqua)
+                        set loop-block to freshly planted wheat plant
+                        add 1 to {farmbotstorage::%{_loc}%}
+                    wait 8 ticks
+                else if loop-block is beetroots[age=3]:
+                    if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+                        drawfarmbot({_loc2}, loop-block, aqua)
+                        set loop-block to freshly planted beetroot plant
+                        add 1 to {farmbotstorage::%{_loc}%}
+                    wait 8 ticks
+                else if loop-block is carrots[age=7]:
+                    if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+                        drawfarmbot({_loc2}, loop-block, aqua)
+                        set loop-block to freshly planted carrot plant
+                        add 1 to {farmbotstorage::%{_loc}%}
+                    wait 8 ticks
+                else if loop-block is potatoes[age=7]:
+                    if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+                        drawfarmbot({_loc2}, loop-block, aqua)
+                        set loop-block to freshly planted potato plant
+                        add 1 to {farmbotstorage::%{_loc}%}
+                    wait 8 ticks
+                else if loop-block is nether wart[age=3]:
+                    if {farmbotstorage::%{_loc}%} <= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+                        drawfarmbot({_loc2}, loop-block, aqua)
+                        set loop-block to freshly planted nether wart plant
+                        add 1 to {farmbotstorage::%{_loc}%}
+                    wait 8 ticks
+        else if {farmbotstorage::%{_loc}%} >= "%{farmbotstoragemax::%{_loc}%} ? 250%" parsed as integer:
+            stop
+
+
+#!on break:
+  #!  set {_l1} to location of event-block ~ vector(1,0,1)
+    #!set {_l2} to location of event-block ~ vector(-1,0,-1)
+    #!break blocks within {_l1} and {_l2} using player's tool
+
+
+      #!  if y-coord of event-location > y-coord of loop-value:
+          #!  if x-coord of event-location - x-coord of loop-value is between -10 and 10:
+              #!  if z-coord of event-location - z-coord of loop-value is between -10 and 10:

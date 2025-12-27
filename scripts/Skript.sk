@@ -1,0 +1,147 @@
+
+
+#fake plugins
+command /plugins:
+	trigger:
+		if group of player is "owner":
+			execute console command "/sudo %player% bukkit:plugins"
+		else:	
+			send "plugins (2): &aFarmcore&7, &aMaxFarms"  
+
+command /pl:
+	trigger:
+		if group of player is "owner":
+			execute console command "/sudo %player% bukkit:plugins"
+		else:	
+			send "plugins (2): &aFarmcore&7, &aMaxFarms"
+
+#warp player to spawn on join
+on join:
+	Make console execute command "/warp Spawn %player%"
+
+#no hunger change
+on hunger meter change: 
+  cancel event
+
+#no item durability change
+on item damage: 
+	cancel event
+
+#/spawn command
+command /spawn:
+	trigger:
+		Make console execute command "/warp Spawn %player%"
+
+#on item spawn of cactus:
+   # drop 5 cactus at event-location
+
+
+
+#on death
+On death of player:
+  Wait 3 ticks
+  execute console command "/warp Spawn %victim%" 
+
+
+#/pvp command
+command /arena:
+	trigger:
+		Make console execute command "/warp pvp %player%"
+		Make player execute command "/speed 1"
+		Make player execute command "/fly disable"
+		Make player execute command "/god disable"
+
+on join: 
+	if {badpeople::*} contains player's uuid:
+		kick player 
+		ban player
+
+#sellwand cancel drop
+on drop:
+	if name of player's tool contains "Sellwand":
+		cancel event
+		send "&cYou cannot drop that!" to player
+
+#death stick cancel drop
+on drop:
+	if name of player's tool is "&4Death Sentence":
+		cancel event
+		send "&cYou cannot drop that!" to player	
+
+#/sell command
+command /sell:
+	trigger:
+		execute console command "/sudo %player% esell inventory"
+		stop
+
+#/trash command
+command /trash:
+	trigger:
+		open chest inventory with 6 rows named "&7&lTrash&l" to player
+
+#stats command
+command /stats <player>:
+  trigger:
+    if arg-1 has permission "staff.maxfarms":
+      if arg-1 is "blackice2":
+        set {_staff} to "&cno"
+      else:
+        set {_staff} to "&ayes"
+    else if arg-1 doesn't have the permission "staff.maxfarms":
+      set {_staff} to "&cno"
+    set {_timeplayed} to time played of arg-1
+    send " "
+    send "&3===================================="
+    send "          &l%arg-1%&l's stats! "
+    send " "
+    send "&6Balance&7: &a%arg-1's balance%  "
+    send "&6Tokens&7: &e%{tokens.%arg-1's uuid%}%"
+    send "&6Rank&7: &3%arg-1's group%"
+    send "&6Rebirth&7: &b%{rebirth.%arg-1's uuid%}%"
+    send "&6Staff&7: %{_staff}%"
+    send "&6%arg-1%&6's playime&7: &f%{_timeplayed}%"
+    send "&6Deaths&7: &4%{deaths.%arg-1's uuid%}%"
+    send " "
+    send "&3===================================="
+    send " "
+
+
+	
+
+
+
+
+#anti use off bukkit stuff + no /minecraft:me spam
+On command:
+  if command contains ":me":
+    if the executor is console:
+      stop
+    else:  
+      if player doesn't have the permission "staff.maxfarms":
+        Send "&cThose commands have been disabled by the owner!"
+        cancel event
+
+#auto adjusting randomtickspeed
+#every 8 minutes:
+#  set {_tps} to tps from the last minute
+ # if {_tps} is higher or equal to 15:
+ #   set {_rng} to a random integer between 55 and 69
+ #   broadcast "&3&lMaxFarms&r &7<> &6&oChanged tickspeed to %{_rng}%"
+ #   make console execute command "/mv gamerule randomTickSpeed %{_rng}% mf9"
+ #else if {_tps} is higher or equal to 12:
+ #   set {_rng} to a random integer between 49 and 54
+ #   broadcast "&3&lMaxFarms&r &7<> &6&oChanged tickspeed to %{_rng}%"
+ #   make console execute command "/mv gamerule randomTickSpeed %{_rng}% mf9"
+ # else if {_tps} is higher or equal to 10:
+  #  set {_rng} to a random integer between 26 and 50
+  #  broadcast "&3&lMaxFarms&r &7<> &6&oChanged tickspeed to %{_rng}%"
+  #  make console execute command "/mv gamerule randomTickSpeed %{_rng}% mf9"
+ # else if {_tps} is smaller or equal to 9:
+  #  set {_rng} to a random integer between 10 and 25
+  #  broadcast "&3&lMaxFarms&r &7<> &6&oChanged tickspeed to %{_rng}%"
+   # make console execute command "/mv gamerule randomTickSpeed %{_rng}% mf9"
+	
+
+every 1 hour:
+	loop all players:
+		add 10 to {tokens.%loop-player's uuid%}

@@ -1,0 +1,36 @@
+options:
+    head: "{display:{Name:""{\""text\"":\""Money\""}""},SkullOwner:{Id:""d90e151a-f6ca-49f3-8b44-68e7073fe8bc"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2Y4ZmQ4N2ZlN2UzNGY5MTEzZGQzODVhYWI3YjI0ZWYyMjFjMTlkNDU1MTc1YjI1NzhhZjdmZjQ2ZWVjZiJ9fX0=""}]}}}"
+
+command /worth:
+    trigger:
+        set {_nbt1} to nbt compound from {@head}
+        set {_h1} to a player head with nbt {_nbt1} 
+        set metadata tag "worth" of player to chest inventory with 4 rows named "&2Worth!"
+        set slot 1, 2, 3, 4, 5, 6, 7, 8, 9, 17 , 18, 26, 27, 32, 33, 34 and 35 of metadata tag "worth" of player to white stained glass pane named " "
+        set slot 0 of metadata tag "worth" of player to {_h1} Named "&eYour balance&8: &a%player's balance%"
+        set slot 10 of metadata tag "worth" of player to wheat seeds named "&aWorth &8<> &f€1"
+        set slot 11 of metadata tag "worth" of player to wheat named "&aWorth &8<> &f€6"
+        set slot 12 of metadata tag "worth" of player to potato named "&aWorth &8<> &f€18"
+        set slot 13 of metadata tag "worth" of player to carrot named "&aWorth &8<> &f€16"
+        set slot 14 of metadata tag "worth" of player to poisonous potato named "&aWorth &8<> &f€30"
+        set slot 15 of metadata tag "worth" of player to beetroot named "&aWorth &8<> &f€12"
+        set slot 16 of metadata tag "worth" of player to kelp named "&aWorth &8<> &f€7"
+        set slot 19 of metadata tag "worth" of player to sugar cane named "&aWorth &8<> &f€10" 
+        set slot 20 of metadata tag "worth" of player to cactus named "&aWorth &8<> &f€16"
+        set slot 21 of metadata tag "worth" of player to pumpkin named "&aWorth &8<> &f€15"
+        set slot 22 of metadata tag "worth" of player to melon slice of unbreaking 1 named "&aWorth &8<> &f€10" with all flags hidden
+        set slot 23 of metadata tag "worth" of player to nether wart named "&aWorth &8<> &f€30"
+        set slot 24 of metadata tag "worth" of player to chorus fruit named "&aWorth &8<> &f€35"
+        set slot 25 of metadata tag "worth" of player to twisting vines named "&aWorth &8<> &f€9"
+        set slot 28 of metadata tag "worth" of player to chicken named "&aWorth &8<> &f€35"
+        set slot 29 of metadata tag "worth" of player to raw beef named "&aWorth &8<> &f€50"
+        set slot 30 of metadata tag "worth" of player to raw mutton named "&aWorth &8<> &f€45"
+        set slot 31 of metadata tag "worth" of player to raw porkchop named "&aWorth &8<> &f€16"
+        open (metadata tag "worth" of player) to player
+
+
+
+on inventory click:
+    type of event-inventory is set
+    if event-inventory = metadata tag "worth" of player:
+        cancel event

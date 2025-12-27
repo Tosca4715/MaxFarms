@@ -1,0 +1,42 @@
+on join:
+	If {playersjoined::*} doesn't contain player's uuid:
+		Add player's uuid to {playersjoined::*}
+		set {deaths.%player's uuid%} to 0
+		set {rebirth.%player's uuid%} to 1
+		set {cooldown1.%player's uuid%} to 0
+		set {rank.%player's uuid%} to 0
+		set {tokens.%player's uuid%} to 0
+		delete {tokens.%player's uuid%}
+
+command /clearjoined:
+	permission: tosca.perm
+	trigger:
+		Send "%{playersjoined::*}%"
+		send "%{season::*}%"
+		Clear {playersjoined::*}
+		clear {season::*} 
+		Send "&acleared!"
+		Send "%{playersjoined::*}%"
+		send "%{season::*}%"
+		clear {rank.%player's uuid%}
+		delete {mobgens::gens::%player's uuid%::*}
+
+on join:
+    If {season::*} doesn't contain player's uuid:
+        if player has the permission "rankreset.bypass":
+            execute console command "lp user %player's name% parent remove rich"
+            execute console command "lp user %player's name% parent remove god"
+            execute console command "lp user %player's name% parent remove king"
+            execute console command "lp user %player's name% parent remove overlord"
+            execute console command "lp user %player's name% parent remove veteran"
+            execute console command "lp user %player's name% parent remove overpowered"
+            execute console command "lp user %player's name% parent remove spectre"
+            execute console command "lp user %player's name% parent remove superior"
+            execute console command "lp user %player's name% parent remove warrior"
+            execute console command "lp user %player's name% parent remove skilled"
+            execute console command "lp user %player's name% parent remove farmer"
+            execute console command "lp user %player's name% parent add default"
+            Add player's uuid to {season::*}
+        else:
+            execute console command "lp user %player's name% parent set default"
+            Add player's uuid to {season::*}

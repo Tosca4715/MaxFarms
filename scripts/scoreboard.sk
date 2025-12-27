@@ -1,0 +1,27 @@
+every 4 seconds:
+  loop all players:  
+    set {_ping} to loop-player's ping
+    set {_tps} to tps from the last minute
+    if {_ping} is smaller or equal to 100:
+      set {_colorping} to "&a"
+    else if {_ping} is smaller or equal to 250:
+      set {_colorping} to "&6"
+    else:
+      set {_colorping} to "&c"
+    if {_tps} is higher or equal to 16:
+      set {_colortps} to "&a"
+    else if {_tps} is higher or equal to 9:
+      set {_colortps} to "&6"
+    else if {_tps} is smaller or equal to 9:
+      set {_colortps} to "&c"    
+    set title of loop-player's scoreboard to "&f&lMax&a&lFarms &fSeason ♾ &a(%number of all players%/50)"
+    set line 10 of loop-player's scoreboard to "&a┏━━━━━━━━━━━༻❁༺━━━━━━━━━━━━┓" 
+    set line 9 of loop-player's scoreboard to " &7&l%loop-player%"
+    set line 8 of loop-player's scoreboard to "    &fBal: &a%balformat(loop-player's balance)%"
+    set line 7 of loop-player's scoreboard to "    &fRebirth: &b%{rebirth.%loop-player's uuid%}%"
+    set line 6 of loop-player's scoreboard to "    &eTokens: &f%balformat({tokens.%loop-player's uuid%}) ? 0%"
+    set line 5 of loop-player's scoreboard to "&8"
+    set line 4 of loop-player's scoreboard to " &7&lServer&8:"
+    set line 3 of loop-player's scoreboard to "    &cTps&7:&r %{_colortps}%%tps from the last minute%"
+    set line 2 of loop-player's scoreboard to "    &aIp: &7Cytion.io"
+    set line 1 of loop-player's scoreboard to "&a┗━━━━━━━━━━━༻❁༺━━━━━━━━━━━━┛"

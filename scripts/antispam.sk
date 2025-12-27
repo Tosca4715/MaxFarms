@@ -1,0 +1,58 @@
+#spam/chatfilter
+on chat:
+	if {SkCheat::spam.m::%uuid of player%} is message:
+		add 1 to {SkCheat::spam.p::%uuid of player%}
+		if {SkCheat.spam.notify::%uuid of player%} is not set:
+			set {SkCheat.spam.notify::%uuid of player%} to now
+		if difference between {SkCheat.spam.notify::%uuid of player%} and now is more than 1 second:
+			if {SkCheat::spam.p::%uuid of player%} is greater than 4:
+				execute console command "tempmute %player% 30m no Spamming!! (automute)"
+				clear {SkCheat::spam.p::%uuid of player%}
+	else:
+		set {SkCheat::spam.m::%uuid of player%} to message	
+
+on join:
+	clear {SkCheat::spam.p::%uuid of player%}
+	clear {SkCheat::spam.m::%uuid of player%}
+
+on disconnect:
+	clear {SkCheat::spam.p::%uuid of player%}
+	clear {SkCheat::spam.m::%uuid of player%}
+
+
+command /blacklist [<text>]:
+    permission: *
+    permission message: &cCan't do that!
+    trigger:
+        if arg-1 is not set:
+            send "%{blacklist::*}%" to player
+        else if arg-1 is set:
+            add arg-1 to {blacklist::*}
+            send "&f&lMax&a&lFarms &7> &aAdded %arg-1% &ato the current blacklist %nl%&f&lMax&a&lFarms &7>&cto see the full blacklist do /blacklist"
+
+command /unblacklist [<text>]:
+    permission: *
+    permission message: &cCan't do that!
+    trigger:
+        if arg-1 is not set:
+            send "%{blacklist::*}%" to player
+        else if arg-1 is set:
+            if {blacklist::*} contains arg-1:
+                remove arg-1 from {blacklist::*}
+                send "&f&lMax&a&lFarms &7> &cRemoved %arg-1% &cfrom the blacklist"
+            else:
+                send "&f&lMax&a&lFarms &7> &cthat word is not blacklisted!"
+
+
+on chat:
+    if player has the permission "*":
+        stop
+    else:
+        loop {blacklist::*}:
+            if message contains loop-value:
+                cancel event
+                send "&f&lMax&a&lFarms &7> &cSomething you where trying to say is blacklisted!" to player
+		
+
+on tab complete of "/unblacklist":
+    set tab completions for position 1 to {blacklist::*}

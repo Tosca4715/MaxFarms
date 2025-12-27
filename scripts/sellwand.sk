@@ -1,0 +1,87 @@
+on load:
+    send "&aReloaded Sellwand V2 by &cTosca4715" to all players
+
+function GetBlockPrice(i: integer) :: number:
+    set {_j} to 0
+    loop {prices::*}:
+        add 1 to {_j}
+        if {_i} is {_j}:
+            return loop-value
+
+function sellwand(p: player):
+    set {_uuid} to uuid of {_p}
+    if inventory of {_p} has diamond hoe:
+        send "&aShop &7<> &3Have you already got a sellwand?" to {_p}
+    else:
+        if balance of {_p} >= 1000000:
+            remove 1000000 from {_p}'s balance
+            give {_p} 1 diamond hoe of unbreaking 1 named "&bSellwand" with lore  " ", "&fRight click on a chest to sell it containts!", " " and "&7Sellwand owner: &7%{_uuid}%"
+            send "&aYou have succesfully purchased the sellwand!" to {_p}
+        else:
+            send "&cYou dont have enough money for that!" to {_p}
+            
+command /sellwand:
+    permission: *
+    trigger:
+        sellwand(player)
+        
+on right click with diamond hoe on chest, shulker or barrel:
+    if name of player's tool is "&bSellwand":
+        if line 4 of lore of player's tool contains "%player's uuid%":
+            cancel event
+            set {_soldItems::%player's name%} to 0
+            set {_earnings::%player's name%} to 0
+            loop all items in inventory of clicked block:
+                set {_amount} to item amount of loop-item
+                set {_n} to 0
+                loop {sellables::*}:
+                    add 1 to {_n}
+                    if loop-value-2's type is loop-item's type:
+                        add {_amount} to {_soldItems::%player's name%}
+                        add GetBlockPrice({_n}) * {_amount} * {rebirth.%player's uuid%} to {_earnings::%player's name%}
+                        remove loop-item from inventory of event-block
+            if {_soldItems::%player's name%} is more than 0:
+                send "&3Sold a Chest and earned&7: &a€%balformat({_earnings::%player's name%})%" to player
+                add {_earnings::%player's name%} to player's balance
+                delete {_earnings::%player's name%}
+                delete {_soldItems::%player's name%}
+        else:
+            send "&cYou cannot sell chests with someone elses sellwand!" to player
+            
+
+
+
+command /sellist [<text>] [<integer>]:
+    permission: *
+    trigger:
+        if arg-1 is not set:
+            clear {prices::*}
+            clear {sellables::*}
+            send "&c/selllist add &8(remove) &c<price> Adds &8(removes) &cthe block in your hand to the sell list" to player
+            send "&c/selllist list sends the entire block list" to player
+        else if arg-1 is "add":
+            arg-2 is set
+            if name of player's tool is not set:
+                add player's tool to {sellables::*}
+                add arg-2 to {prices::*}
+                send "added %player's tool% with price %arg-2%"
+            else:
+                send "&c&lcant add named items!!" to player
+        else if arg-1 is "remove":
+            set {_i} to 0
+            loop {sellables::*}:
+                add 1 to {_i}
+                if {_i} is arg 2:
+                    remove loop-value from {sellables::*}
+                    set {_i} to 0
+                    loop {prices::*}:
+                        add 1 to {_i}
+                        if {_i} is arg 2:
+                            remove loop-value-2 from {prices::*}
+                            send "&aSuccessfully removed block and price" to player
+                            stop
+        else if arg-1 is "list":
+            set {_n} to 0
+            loop {sellables::*}:
+                add 1 to {_n}
+                send "&6%{_n}% &8> &e%loop-value% &8| &e$%GetBlockPrice({_n})%"

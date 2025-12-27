@@ -1,0 +1,16 @@
+command /start:
+    trigger:
+        if {rank.%player's uuid%} = 0: 
+            set {rank.%player's uuid%} to 1
+            execute console command "lp user %player% parent add farmer"
+            wait 2 ticks
+            make player execute command "/p a"
+            execute console command "give %player% stone_pickaxe 1"
+            execute console command "give %player% stone_axe 1"
+            execute console command "give %player% stone_shovel 1"
+            execute console command "give %player% stone_hoe 1"
+            execute console command "eco give %player% 2500"
+            execute console command "give %player% water_bucket 1"
+            execute console command "give %player% wheat_seeds 64"
+        else:
+            send "&cU have already used this command!"

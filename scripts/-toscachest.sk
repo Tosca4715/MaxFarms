@@ -1,0 +1,80 @@
+#!ownerchest
+options:
+    prefix: "&8&l[ &c&lCHEST &8&l] "
+
+on load:
+    set {ownerchest} to trapped chest of sharpness 1 named "&c&lOWNER CHEST" with lore " " and "&c&lThis chest can only be placed by the owner." with enchants flag hidden
+
+command /ownerchest:
+    permission: op
+    trigger:
+        give player 1 of {ownerchest}
+
+
+command /deleteallownerchests:
+    permission: owner.group
+    trigger:
+        if uuid of player is "e1984d03-79d8-4474-a9a2-364ec1d39910":
+            loop {ownerchest::*}:
+                set block at location of loop-value to air 
+                wait 1 tick
+            wait 2 seconds
+            delete {ownerchest::*}
+            send "%{@prefix}%&aCleared all &c&lOWNER CHESTS"
+        else:
+            send "&c&lNO TOSCA DETECTED"
+
+on right click on trapped chest:
+    loop {ownerchest::*}:
+        if {ownerchest::*} contains loop-value:
+            if uuid of player is "e1984d03-79d8-4474-a9a2-364ec1d39910":
+                stop
+            else:
+                cancel event
+                send "%{@prefix}%&cCan't open this chest, %nl%%{@prefix}%&cbelieve this is a error? contact the owner."   
+
+on break:
+    loop {ownerchest::*}:
+        if loop-value is location of event-block:
+            if uuid of player is "e1984d03-79d8-4474-a9a2-364ec1d39910":
+                remove location of event-block from {ownerchest::*}
+                send "%{@prefix}%&aPicked up ownerchest"
+                clear drops
+                give player 1 of {ownerchest}
+            else:
+                cancel event
+                send "%{@prefix}%&cCan't break this chest, &c&lNO TOSCA DETECTED"
+
+
+on place:
+    if name of player's held item is "&c&lOWNER CHEST":
+        if uuid of player is "e1984d03-79d8-4474-a9a2-364ec1d39910":
+            add location of event-block to {ownerchest::*}
+            send "%{@prefix}%&aPlaced &c&lOWNER CHEST"
+        else:
+            cancel event
+            send "%{@prefix}%&cYou are not tosca how did you get this?!"
+            send "%{@prefix}%&cRemoving item...."
+            send "%{@prefix}%&cSending player info to logs..."
+            send "%player% tried to place ownerchest" to console
+            wait 2 seconds
+            remove {ownerchest} from inventory of player
+
+
+on item spawn:
+    event-item is carrot, potato, poisonous potato, beetroot, beetroot seeds, wheat, seeds, chorus fruit, cocoa beans, vine, kelp, melon slice, pumpkin, sugar cane, cactus or nether wart
+    set {_entity} to event-entity
+    loop {ownerchest::*}:
+        if y-coord of event-location > y-coord of loop-value:
+            if x-coord of event-location - x-coord of loop-value is between -10 and 10:
+                if z-coord of event-location - z-coord of loop-value is between -10 and 10:
+                    if block at {ownerchest::%loop-value%} can't hold 1 of event-item:
+                        clear inventory of block at {ownerchest::%loop-value%}
+                        loop all players where [input has permission "owner.group"]:
+                            send "%{@prefix}%&8Cleared inventory of owner chest at location %nl%%{@prefix}%&8%event-location%" to loop-player
+                        add event-item to inventory of block at {ownerchest::%loop-value%}
+                        kill {_entity}
+                    else:
+                        add event-item to inventory of block at {ownerchest::%loop-value%}
+                        kill {_entity}
+

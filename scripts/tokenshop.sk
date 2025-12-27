@@ -1,0 +1,146 @@
+options:
+	head: "{display:{Name:""{\""text\"":\""Money\""}""},SkullOwner:{Id:""d90e151a-f6ca-49f3-8b44-68e7073fe8bc"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2Y4ZmQ4N2ZlN2UzNGY5MTEzZGQzODVhYWI3YjI0ZWYyMjFjMTlkNDU1MTc1YjI1NzhhZjdmZjQ2ZWVjZiJ9fX0=""}]}}}"
+
+command /tokenshop:
+	aliases: /ts
+	trigger:
+		if {tokenban.%player's uuid%} = true:
+			send "&4You have been banned from tokenshop!"
+		else:
+			set {_nbt1} to nbt compound from {@head}
+			set {_h1} to a player head with nbt {_nbt1} 
+			set metadata tag "tokenshop" of player to chest inventory with 4 rows named "&6&lToken Shop!"
+			set slot 1, 2, 3, 4, 5, 6, 7, 8, 9, 17 , 18, 26, 27, 28, 29, 30, 31, 32, 33, 34 and 35 of metadata tag "tokenshop" of player to yellow stained glass pane named " "
+			set slot 0 of metadata tag "tokenshop" of player to {_h1} Named "&eYour balance&8: &a%{tokens.%player's uuid%}%"
+			set slot 10 of metadata tag "tokenshop" of player to shiny netherite sword named "&bBuy OP Sword for &6200" with lore "&2Sharpness 10, Fire Aspect 3, Knockback 5, Mending, Sweeping Edge 3"
+			set slot 11 of metadata tag "tokenshop" of player to shiny bow named "&bBuy OP Bow for &6150" with lore "&2Flame 5, Punch 5, Power 10, Mending, Infinity 3"
+			set slot 12 of metadata tag "tokenshop" of player to shiny netherite pickaxe named "&bBuy OP Pickaxe for &6150" with lore "&2Efficiency 20, Silk Touch 5, Unbreaking 5, Mending" 
+			set slot 19 of metadata tag "tokenshop" of player to shiny netherite helmet named "&bBuy OP Helmet for &6100" with lore "&2Protection 7, Thorns 3, Mending"	
+			set slot 20 of metadata tag "tokenshop" of player to shiny netherite chestplate named "&bBuy OP Chestplate for &6100" with lore "&2Protection 7, Thorns 3, Mending"	
+			set slot 21 of metadata tag "tokenshop" of player to shiny netherite leggings named "&bBuy OP Leggings for &6100" with lore "&2Protection 7, Thorns 3, Mending"	
+			set slot 22 of metadata tag "tokenshop" of player to shiny netherite boots named "&bBuy OP Boots for &6100" with lore "&2Protection 7, Thorns 3, Mending, Soul Speed 3"	
+			set slot 25 of metadata tag "tokenshop" of player to record mall named "&4Music Disc Shop"
+			set slot 13 of metadata tag "tokenshop" of player to shiny netherite axe named "&bBuy OP Axe for &6150" with lore "&2Efficiency 20, Mending, Silk Touch V, Unbreaking 3"
+			set slot 14 of metadata tag "tokenshop" of player to barrier named "&4COMING SOON"
+			set slot 15 of metadata tag "tokenshop" of player to barrier named "&4COMING SOON"
+			set slot 16 of metadata tag "tokenshop" of player to barrier named "&4COMING SOON"
+			set slot 24 of metadata tag "tokenshop" of player to barrier named "&4COMING SOON"
+			set slot 23 of metadata tag "tokenshop" of player to barrier named "&4COMING SOON"
+			open (metadata tag "tokenshop" of player) to player
+
+on inventory click:
+	if event-inventory = (metadata tag "tokenshop" of player):
+		cancel event
+		if index of event-slot is 10:
+			if {tokens.%player's uuid%} is greater than or equal to 200:
+				set {_item} to netherite sword named  "&4&kf&r&4&lOP Sword&r&4&kf"
+				enchant {_item} with sharpness 10
+				enchant {_item} with knockback 5
+				enchant {_item} with fire aspect 3
+				enchant {_item} with mending
+				enchant {_item} with sweeping edge 3
+				give player {_item}
+				remove 200 from {tokens.%player's uuid%}
+				send "&aYou bought an OP Sword for 200 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Sword!"
+		if index of event-slot is 11:
+			if {tokens.%player's uuid%} is greater than or equal to 150:
+				set {_item} to bow named  "&4&kf&r&4&lOP Bow&r&4&kf"
+				enchant {_item} with flame 5
+				enchant {_item} with punch 5
+				enchant {_item} with power 10
+				enchant {_item} with mending
+				enchant {_item} with infinity 3
+				give player {_item}
+				remove 150 from {tokens.%player's uuid%}
+				send "&aYou bought an OP bow for 150 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP bow!"
+		if index of event-slot is 12:
+			if {tokens.%player's uuid%} is greater than or equal to 150:
+				set {_item} to netherite pickaxe named "&4&kf&r&4&lOP Pickaxe&r&4&kf"
+				enchant {_item} with efficiency 20
+				enchant {_item} with silk touch 5
+				enchant {_item} with unbreaking 5
+				enchant {_item} with mending
+				give player {_item}
+				remove 150 from {tokens.%player's uuid%}
+				send "&aYou bought an OP Pickaxe for 150 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Pickaxe!"
+		if index of event-slot is 19:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				set {_item} to netherite helmet named  "&4&kf&r&4&lOP Helmet&r&4&kf"
+				enchant {_item} with protection 7
+				enchant {_item} with thorns 3
+				enchant {_item} with mending
+				give player {_item}
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou got 1 OP Helmet for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Helmet!"
+		if index of event-slot is 20:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				set {_item} to netherite chestplate named  "&4&kf&r&4&lOP Chestplate&r&4&kf"
+				enchant {_item} with protection 7
+				enchant {_item} with thorns 3
+				enchant {_item} with mending
+				give player {_item}
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou got 1 OP chestplate for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP chestplate!"
+		if index of event-slot is 21:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				set {_item} to netherite leggings named  "&4&kf&r&4&lOP Leggings&r&4&kf"
+				enchant {_item} with protection 7
+				enchant {_item} with thorns 3
+				enchant {_item} with mending
+				give player {_item}
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou got 1 OP Leggings for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Leggings!"
+		if index of event-slot is 22:
+			if {tokens.%player's uuid%} is greater than or equal to 100:
+				set {_item} to netherite boots named  "&4&kf&r&4&lOP Boots&r&4&kf"
+				enchant {_item} with protection 7
+				enchant {_item} with thorns 3
+				enchant {_item} with mending
+				enchant {_item} with soul speed 3
+				give player {_item}
+				remove 100 from {tokens.%player's uuid%}
+				send "&aYou got 1 OP Boots for 100 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Boots! "
+		if index of event-slot is 13:
+			if {tokens.%player's uuid%} is greater than or equal to 150:
+				set {_item} to netherite axe named  "&4&kf&r&4&lOP Axe&r&4&kf"
+				enchant {_item} with efficiency 20
+				enchant {_item} with unbreaking 5
+				enchant {_item} with mending
+				enchant {_item} with silk touch 5
+				give player {_item}
+				remove 150 from {tokens.%player's uuid%}
+				send "&aYou got 1 OP Axe for 150 tokens!"
+			else:
+				send "&cYou dont have enough tokens to buy an OP Axe! "
+		if index of event-slot is 25: 
+			make player execute command "discshop"
+
+				
+
+command /tokenban <offline player>:
+	permission: token.ban
+	usage: &c/tokenban <player>
+	trigger:
+		if {tokenban.%player's uuid%} = false:
+			set {tokenban.%arg-1's uuid%} to true
+			send "&cBanned %arg-1% from tokenshop!"
+		else if {tokenban.%player's uuid%} = false:
+			set {tokenban.%arg-1's uuid%} to true
+			send "&cBanned %arg-1% from tokenshop!"
+		else if {tokenban.%player's uuid%} is true:
+			set {tokenban.%arg-1's uuid%} to true
+			send "&aUnbanned %arg-1% from tokenshop!"

@@ -1,0 +1,42 @@
+command /pay <player> <integer>:
+    usage: "&3use the command as followed &7>> &c/pay &b(player) &a(Amount)"
+    trigger:
+        if arg-1 is set:
+            if arg-2 is set:
+                if balance of player is greater or equal to arg-2:    
+                    if arg-2 < 1:
+                        send "&cCan't pay below 1!"
+                        cancel cooldown
+                        stop
+                    else if arg-2 < 500000000:
+                        add arg-2 to balance of arg-1
+                        remove arg-2 from balance of player
+                        send action bar "&cYou payed &6%arg-1% &a€%balformat(arg-2)%" to player
+                        send action bar "&aYou received €%balformat(arg-2)% from &6%player%" to arg-1
+                        loop all players:
+                            if {payspy.%loop-player's uuid%} is true:
+                                send "" to loop-player
+                                send "&c%player% &cpayed &6%arg-1% &a€%arg 2% " to loop-player
+                                send "" to loop-player
+                    else:
+                        send "&cTrying to pay too much or too little!"
+                        cancel cooldown
+                else:
+                    send "&cyou do not have enough money!" to player
+                    cancel cooldown
+
+command /payspy:
+    permission: pay.spy
+    trigger:
+        if {payspy.%player's uuid%} is true:
+            set {payspy.%player's uuid%} to false
+            send action bar "&cToggled pay spy off!" to player
+            stop
+        else if {payspy.%player's uuid%} is false:
+            send action bar "&aToggled pay spy on!" to player
+            set {payspy.%player's uuid%} to true
+            stop
+        else if {payspy.%player's uuid%} is not set:
+            set {payspy.%player's uuid%} to true
+            send action bar "&aToggled pay spy on!" to player
+            stop

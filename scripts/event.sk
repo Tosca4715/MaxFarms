@@ -1,0 +1,72 @@
+command /adminevent [<text>] [<text>]:
+  permission: *
+  trigger:
+    if arg-1 is "enable":
+      send title "&c&lEVENT MODE ENABLED" with subtitle "&3By %player%" to all players
+      set {event} to true
+      send " "
+      send "&7&l--------&3MAXFARMS&7--------"
+      send " "
+      send "&c&lEVENT MODE HAS BEEN ENABLED"
+      send "&call commands except /start have been halted"
+      send " "
+      send "&7&l--------&3MAXFARMS&7--------"
+      send " "
+      loop all players:
+        set max health of loop-player to 1
+      if arg-2 is "dropper":
+        send "&4Coming soon"
+      else if arg-2 is "parkour":
+        send "&4Coming soon"
+      else if arg-2 is "build":
+        send "&4Coming soon"
+
+    else if arg-1 is "disable":
+      delete {event} 
+      send title "&c&lEVENT MODE DISABLED" with subtitle "&3By %player%" to all players
+      send " "
+      send "&7&l--------&3MAXFARMS&7--------"
+      send " "
+      send "&a&lEVENT MODE HAS BEEN DISABLED"
+      send "&aCommands work again as normal!"
+      send " "
+      send "&7&l--------&3MAXFARMS&7--------"
+      send " "
+      loop all players:
+        set max health of loop-player to 10
+    else if arg-1 is not set:
+      if {event} is set:
+        send "&aEvent mode is currently enabled!"
+      else:
+        send "&cEvent mode is currently disabled!"
+
+on damage:
+	if attacker is a player:
+		if {event} is true:
+			cancel event
+			send "&ccan't damage others during a event!" to attacker
+
+on break:
+  if {event} is true:
+    if player has the permission "*":
+      stop
+    else:
+      cancel event
+      send "&cevent mode is on can't do that" to player
+
+on command:
+  if {event} is set:
+    if player doesn't have permission "staff.maxfarms":
+      if full command contains "/start" or "/event":
+        stop
+      else: 
+        send "&cAll commands except /start are disabled during the event!" to player
+        cancel event
+
+on join:
+	set max health of player to 10
+
+
+on tab complete of "/adminevent":
+  set tab completions for position 1 to "enable" and "disable"
+  set tab completions for position 2 to "dropper", "parkour" and "build"

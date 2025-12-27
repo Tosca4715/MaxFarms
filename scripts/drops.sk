@@ -1,0 +1,13 @@
+on death:
+    if victim is cow:
+        clear drops
+        drop 2 raw beef
+    if victim is pig:
+        clear drops
+        drop 2 raw porkchop
+    if victim is Sheep:
+        clear drops
+        drop 2 raw mutton
+    if victim is chicken:
+        clear drops
+        drop 1 raw chicken

@@ -1,0 +1,22 @@
+options:
+	mutechat: &7[&f&lMax&a&lFarms&7]
+
+command /mutechat:
+	permission: chat.mute
+	permission message: &4&lNo perms for that!
+	trigger:
+		set {_sender} to player ? ("%console%" in lowercase)
+		if {Globalchat} is not set:
+			set {Globalchat} to true
+			broadcast "{@mutechat} &c&lChat muted by &c&l%{_sender}%"
+		else:
+			clear {Globalchat}
+			broadcast "{@mutechat} &a&lChat unmuted by %{_sender}%"
+
+on chat:
+	if {Globalchat} is true:
+		if player has permission "chat.mute.bypass":
+			stop trigger
+		else:
+			cancel event
+			send "{@mutechat} &cChat is currently muted."

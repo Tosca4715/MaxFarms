@@ -1,0 +1,34 @@
+command /token <text> [<player>] [<integer>]:
+    aliases: /tks
+    executable by: players and console
+    trigger:
+        if arg 1 is "add":
+            arg 2 is set
+            arg 3 is set
+            if player has the permission "tokens.add":
+                if arg 3 is greater than 0:
+                    add arg 3 to {tokens.%arg 2's uuid%}
+                    message " &4You Added &a%arg 3% Tokens &4To %arg 2%"
+                    message " &6You have recieved &a%arg 3% Tokens&6" to arg 2
+                else:
+                    message "&cYou Can Not Give A Value Less Then 1 Token"
+        else if arg 1 is "remove":
+            if player is op:
+                if arg 3 is greater than 0:
+                    if arg 3 is less than or equal to {tokens.%arg 2's uuid%}:
+                        subtract arg 3 from {tokens.%arg 2's uuid%}
+                        message "&4You Have Removed &a%arg 3%&4 From &a%arg 2%"
+                        message " &6A Server Administrator Removed &a%arg 3% Tokens&6 From Your Account " to arg 2
+
+        else if arg 1 is "set":
+            if player is op:
+                set {tokens.%arg 2's uuid%} to arg 3
+                message " &4You set &a%arg 2% Tokens &4To %arg 3%"
+                message " &6Your tokens has been set to &a%arg 3% Tokens&6" to arg 2
+
+
+                        
+on tab complete of "/token":
+    set tab completions for position 1 to "add", "remove" and "set"
+    set tab completions for position 3 to "20", "30", "40", and "50"
+

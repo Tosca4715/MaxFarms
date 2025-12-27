@@ -1,0 +1,21 @@
+every 2 minutes:
+    broadcast "&f&lMax&a&lFarms &7<> &f&oClearing all animals & items in 5 seconds"
+    wait 5 seconds
+    set {_clearlag} to size of all dropped items
+    set {_animals} to size of all animals
+    kill all animals
+    clear all dropped items
+    broadcast "&f&lMax&a&lFarms &7<> &f&o removed %{_clearlag}% drops, %{_animals} ? 0% animals!"
+
+command /clearlag:
+  permission: staff.clearlag
+  permission message: [&c&l!&f] You don't have permission
+  trigger:
+    broadcast "&f&lMax&a&lFarms &7<> &f&oClearing all animals & items in 5 seconds"
+    wait 5 seconds
+    set {_clearlag} to size of all dropped items
+    set {_animals} to size of all animals
+    kill all animals
+    clear all dropped items
+    broadcast "&f&lMax&a&lFarms &7<> &f&o removed %{_clearlag}% drops, %{_animals} ? 0% animals!"
+

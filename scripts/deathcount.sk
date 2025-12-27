@@ -1,0 +1,2 @@
+on death:
+	add 1 to {deaths.%victim's uuid%}

@@ -1,0 +1,83 @@
+function balformat(n: number) :: text:
+    set {_s::*} to "|k|m|b|t|qd|qn|sx|sp|o|n|de|ud|dd|tdd|qdd|qnd|sxd|spd|ocd|nvd|vgn|uvg|dvg|tvg|qtv|QNV|SEV|SPG|OVG|NVG|TGN|UTG|DTG|TSTG|QTTG|QNTG|SSTG|SPTG|OCTG|NOTG|QDDR|UQDR|DQDR|TQDR|QDQDR|QNQDR|SXQDR|SPQDR|OQDDR|NQDDR|QQGNT|UQGNT|DQGNT|TQGNT|QDQGNT|QNQGNT|SXQGNT|SPQGNT|OQQGNT|NQQGNT" split at "|"# end at 60
+    return "%{_n}%" if {_n} < 1000
+    return "%({_n})/(1000^(min(floor(log({_n})/3), size of {_s::*})))%%{_s::%min((floor(log({_n})/3 + 1)), size of {_s::*})%}%"
+
+function rebirth(p: player, rank: integer, rebirth: integer, startprice: integer, multi: integer):
+	if {_rank} = 10:
+		wait 1 tick
+		if balance of {_p} is greater or equal to {_startprice} * {_multi}:
+			set {_takingyourfuckingmoney} to {_startprice} * {_multi}
+			remove {_takingyourfuckingmoney} from balance of {_p}
+			set {rebirth.%{_p}'s uuid%} to ({_rebirth} + 1)
+			set {rank.%{_p}'s uuid%} to 1
+			set {currentrebirthprice::%{_p}'s uuid%} to {_startprice} * {_multi}
+			execute console command "lp user %{_p}% parent remove god"
+			execute console command "lp user %{_p}% parent add farmer"
+			send "&6You have succesfully rebirthed to rebirth %{_rebirth} + 1%!" to {_p}
+			if {rebirth.%{_p}'s uuid%} = 15:
+				execute console command "lp user parent add rich"
+		else:
+			send "&c&lYou do not have enough money for a rebirth you need atleast &a€%balformat({_startprice} * {_multi})%" to {_p}
+	else:
+		send "&c&lYou are not god rank therefor you can't rebirth. Purchase god rank in /rankup!" to {_p}
+			
+
+command /rebirth:
+	trigger:
+		if {fixthisthing::%player's uuid%} is true:
+			rebirth(player, {rank.%player's uuid%}, {rebirth.%player's uuid%}, {currentrebirthprice::%player's uuid%}, 2)
+		else:
+			send "cant do this until you relog" to player
+
+on join:
+	if {fixthisthing::%player's uuid%} is true:
+		stop
+	else if {fixthisthing::%player's uuid%} isn't set: 
+		if {rebirth.%player's uuid%} = 1:
+			set {currentrebirthprice::%player's uuid%} to 5000000
+		if {rebirth.%player's uuid%} = 2:	
+			set {currentrebirthprice::%player's uuid%} to 10000000
+		if {rebirth.%player's uuid%} = 3:	
+			set {currentrebirthprice::%player's uuid%} to 20000000
+		if {rebirth.%player's uuid%} = 4:	
+			set {currentrebirthprice::%player's uuid%} to 40000000
+		if {rebirth.%player's uuid%} = 5:	
+			set {currentrebirthprice::%player's uuid%} to 80000000
+		if {rebirth.%player's uuid%} = 6:	
+			set {currentrebirthprice::%player's uuid%} to 160000000
+		set {fixthisthing::%player's uuid%} to true
+
+command /rebirthfix <offlineplayer> <integer>:
+	permission: op
+	trigger:
+		set {currentrebirthprice::%arg-1's uuid%} to arg-2
+command /rebirththing <offlineplayer>:
+	permission: op
+	trigger:
+		broadcast "%{currentrebirthprice::%arg-1's uuid%}%"
+
+command /unfuckrebirths:
+	permission: op
+	trigger:
+		delete {fixthisthing::*}
+
+command /rebirthreset <offlineplayer>:
+	permission: tosca.perm
+	trigger:
+		set {rebirth.%arg-1's uuid%} to 1
+		send message "&crebirths have been reset for %arg-1%."
+
+command /rankreset <offlineplayer>:
+	permission: tosca.perm
+	trigger:
+		set {rank.%arg-1's uuid%} to 1
+		execute console command "lp user %arg-1% parent set farmer"
+		send message "&crank has been reset for %arg-1%."
+
+command /rebirthset <offlineplayer> <number>:
+	permission: rebirth.set
+	trigger:
+		set {rebirth.%arg-1's uuid%} to arg-2
+		send message "&crebirths have been reset to %arg-2% &cfor %arg-1%."
+		

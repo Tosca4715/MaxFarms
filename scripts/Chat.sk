@@ -1,0 +1,87 @@
+#chat.sk
+every 9 minutes:
+  send " " to all players
+  send "&f&lMax&a&lFarms &7<> &a&oWant to join the discord? <link:https://discord.gg/E9jKRdTpPP>Click here!" to all players
+  send " " to all players
+
+command /discord:
+  aliases: /dc
+  trigger:
+    send "<link:https://discord.gg/E9jKRdTpPP>&f&lMax&a&lFarms <link:https://discord.gg/E9jKRdTpPP>&r&7<> <link:https://discord.gg/E9jKRdTpPP>&aClick here to join our discord!" to player
+    stop
+
+command /apply:
+  aliases: /ap
+  trigger:
+    send "<link:https://forms.gle/KYWNiBVeZDGduphg6>&f&lMax&a&lFarms <link:https://forms.gle/KYWNiBVeZDGduphg6>&r&7<> <link:https://forms.gle/KYWNiBVeZDGduphg6>&aClick here to apply for staff!" to player
+    stop
+
+
+
+On first join:
+    set join message to "&8[&a+&8] &a%player% &fjoined &f&lMax&a&lFarms&r!"
+    wait 1 tick
+    broadcast "&8[&aUnique Joins&8] &7➥ &8[&e##%size of all offline players%&8]"
+    wait 3 ticks
+    send "&c&lMake sure to read the rules /rules!!" to player
+    send "&c/start to begin farming and earn &aprofits!" to player
+
+on join:
+    set join message to "&8[&a+&8] &a%player% &fjoined &f&lMax&a&lFarms&r!"
+
+on disconnect:
+    set leave message to "&8[&c-&8] &a%player% &fleft MaxFarms.."
+
+#broadcast
+command /broadcast <text>:
+    permission: essentials.broadcast
+    usage: &4/bc [text] 
+    trigger:
+        if arg-1 is set:
+            broadcast " "
+            broadcast "&7&l--------------------------------------------"
+            broadcast "&f&lMax&a&lFarms&r &lAnnouncement:"
+            broadcast "&7&l--------------------------------------------"
+            broadcast " "
+            broadcast "&f&l%arg-1%"
+            broadcast " "
+            broadcast "&7&l--------------------------------------------"
+            broadcast " "
+            play sound "block.note_block.pling" with volume 1 for all players
+        else:
+            send "&4error /bc text"
+
+command /bc <text>:
+    permission: essentials.broadcast
+    usage: &4/bc [text] 
+    trigger:
+        if arg-1 is set:
+            broadcast " "
+            broadcast "&7&l--------------------------------------------"
+            broadcast "&f&lMax&a&lFarms&r &lAnnouncement:"
+            broadcast "&7&l--------------------------------------------"
+            broadcast " "
+            broadcast "&f&l%arg-1%"
+            broadcast " "
+            broadcast "&7&l--------------------------------------------"
+            broadcast " "
+            play sound "block.note_block.pling" with volume 1 for all players
+        else:
+            send "&4error /bc text"
+
+#clearchat
+command /clearchat:
+    permission: clear.chat
+    aliases: /ch
+    trigger:
+        loop 100 times:
+            broadcast " "
+        broadcast "&f&lMax&a&lFarms&r &7<> &f&oThe chat has been cleared!"
+
+
+
+
+
+
+		
+		

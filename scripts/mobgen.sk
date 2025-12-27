@@ -1,0 +1,225 @@
+#Dependencies: SkBee
+
+options:
+	prefix: &7[&3MaxFarms&7]
+	maxGens: 4
+
+#COMMANDS
+command givegen [<player>] [<string>] [<integer = 1>]:
+	permission: op
+	trigger:
+		if arg-2 is not set:
+			send "&cUsage: givegen <player> <type> [amount]"
+			stop
+		#This here gives a gen of a specific type, the lore is important as it'll serve as a way to check which type the gen is
+		if arg-2 = "cow":
+			give arg-1 arg-3 of netherite block named "&b&lMaxSpawner" with lore "&f- Cow Spawner"
+		if arg-2 = "pig":
+			give arg-1 arg-3 of diamond block named "&b&lMaxSpawner" with lore "&f- Pig Spawner"
+		if arg-2 = "sheep":
+			give arg-1 arg-3 of gold block named "&b&lMaxSpawner" with lore "&f- Sheep Spawner"
+		if arg-2 = "chicken":
+			give arg-1 arg-3 of iron block named "&b&lMaxSpawner" with lore "&f- Chicken Spawner"
+
+#Command to delete target block as generator
+command /delgen [<text>]:
+	permission: op
+	trigger:
+		if arg-1 is not "confirm":
+			send "{@prefix} &cThis will delete gen you're looking at, type &e/delgen confirm &cto confirm!" to player
+			stop
+		else if arg-1 is not set:
+			send "{@prefix} &cThis will delete gen you're looking at, type &e/delgen confirm &cto confirm!" to player
+			stop
+		set {_loc} to location of target block		
+		#This variable has value uuid to check owner of block location
+		set {_uuid} to {mobgens::locations::%{_loc}%}
+
+		#This is the list of gens of the target block's owner
+		#Then checks if that list contains the location of the event-block
+		if {mobgens::gens::%{_uuid}%::*} doesn't contain {_loc}:
+			send "{@prefix} &e%location of target block% &cdoes not appear to be a generator!" to player
+			#If not, it'll stop and not continue, that's why there is no "else:"
+			stop
+		
+		#Removes the event-block's location from the owner's list
+		remove {_loc} from {mobgens::gens::%{_uuid}%::*}
+		#Deletes the type of generator at the location
+		delete {mobgens::gens::%{_uuid}%::%{_loc}%}
+		#Deletes the uuid bound to the location
+		delete {mobgens::locations::%{_loc}%}
+		set target block to air
+		send "{@prefix} &aSuccessfully deleted generator of &f%{_uuid} parsed as player%&a!" to player
+
+#Command to fully reset everyone's gens
+command resetallgens [<text>]:
+	permission: op
+	trigger:
+		if arg-1 is not "confirm":
+			send "{@prefix} &cThis will delete ALL GENERATORS OF EVERYONE, type &e/resetallgens confirm &cto confirm!" to player
+			stop
+		else if arg-1 is not set:
+			send "{@prefix} &cThis will delete ALL GENERATORS OF EVERYONE, type &e/resetallgens confirm &cto confirm!" to player
+			stop
+
+		#I named all {mobgens::<values>} so that resetting is easy, i purposely did not remove all blocks since the plots will be wiped
+		# and it'll crash the server
+		delete {mobgens::*}
+		send "{@prefix} &aSuccessfully deleted all generators! &7(Blocks not cleared due to crash potential)" to player
+
+#END COMMANDS
+
+#CHECK BLOCK VALUES AND ADD TO VARIABLES
+on block place:
+	#sets lore for later use of checking the gen type, this is so that the blocks used don't matter in any way and can be changed.
+	set {_lore} to "%uncolored lore of player's tool%"
+
+	#Sets loc to unstringified (important) version of location (you can't parse text as location, so that's why not stringified)
+	set {_loc} to location of event-block
+
+	#Here comes the lore checking, the blocks under here are all the same, im only commenting one
+	if "%{_lore}%" = "- Cow Spawner":
+		#Indices are the amount of values a variable has, this is used to check the amount of gens they have.
+		if size of indices of {mobgens::gens::%player's uuid%::*} >= {@maxGens}:
+			send "{@prefix} &cYou can only have &f{@maxGens} &cgens in total" to player
+			cancel event
+			stop
+		#This loops the gen locations of the players
+		loop {mobgens::gens::%player's uuid%::*}:
+			#If the current block they're trying to place is somehow already in the location of the tried block it stops
+			if "%loop-value%" = "%location of event-block%":
+				send "{@prefix} &cIt appears you've already placed a spawner here!" to player
+				cancel event
+				stop
+		send "{@prefix} &aSuccessfully placed a &fCow &aMaxSpawner" to player
+		#Here it adds the location of the block to the list of the player's gens
+		add location of event-block to {mobgens::gens::%player's uuid%::*}
+		#Here it sets another variable to the type of gen at that location, used for reverse lookup later. 
+		set {mobgens::types::%player's uuid%::%{_loc}%} to "Cow"
+		#Here it sets the owner of the gen at a location
+		set {mobgens::locations::%{_loc}%} to player's uuid
+	#And the rest:
+	if "%{_lore}%" = "- Pig Spawner":
+		if size of indices of {mobgens::gens::%player's uuid%::*} >= {@maxGens}:
+			send "{@prefix} &cYou can only have &f{@maxGens} &cgens in total" to player
+			cancel event
+			stop	
+		loop {mobgens::gens::%player's uuid%::*}:
+			if "%loop-value%" = "%location of event-block%":
+				send "{@prefix} &cIt appears you've already placed a spawner here!" to player
+				cancel event
+				stop
+		send "{@prefix} &aSuccessfully placed a &fPig &aMaxSpawner" to player
+		add location of event-block to {mobgens::gens::%player's uuid%::*}
+		set {mobgens::types::%player's uuid%::%{_loc}%} to "Pig"
+		set {mobgens::locations::%{_loc}%} to player's uuid
+	if "%{_lore}%" = "- Sheep Spawner":
+		if size of indices of {mobgens::gens::%player's uuid%::*} >= {@maxGens}:
+			send "{@prefix} &cYou can only have &f{@maxGens} &cgens in total" to player
+			cancel event
+			stop
+		loop {mobgens::gens::%player's uuid%::*}:
+			if "%loop-value%" = "%location of event-block%":
+				send "{@prefix} &cIt appears you've already placed a spawner here!" to player
+				cancel event
+				stop
+		add location of event-block to {mobgens::gens::%player's uuid%::*}
+		set {mobgens::types::%player's uuid%::%{_loc}%} to "Sheep"
+		set {mobgens::locations::%{_loc}%} to player's uuid
+		send "{@prefix} &aSuccessfully placed a &fSheep &aMaxSpawner" to player
+	if "%{_lore}%" = "- Chicken Spawner":
+		if size of indices of {mobgens::gens::%player's uuid%::*} >= {@maxGens}:
+			send "{@prefix} &cYou can only have &f{@maxGens} &cgens in total" to player
+			cancel event
+			stop
+		loop {mobgens::gens::%player's uuid%::*}:
+			if "%loop-value%" = "%location of event-block%":
+				send "{@prefix} &cIt appears you've already placed a spawner here!" to player
+				cancel event
+				stop
+		send "{@prefix} &aSuccessfully placed a &fChicken &aMaxSpawner" to player
+		add location of event-block to {mobgens::gens::%player's uuid%::*}
+		set {mobgens::locations::%{_loc}%} to player's uuid
+		set {mobgens::types::%player's uuid%::%{_loc}%} to "Chicken"
+
+#REMOVE LOCATION FROM VAR
+on left click:
+	stop if player isn't sneaking
+	#Checks if the event block is a gen
+	if {mobgens::locations::%location of target block%} is set:
+		#checks if the gen being broken is owned by the player
+		if {mobgens::locations::%location of target block%} is not player's uuid:
+			send "{@prefix} &cYou can't break someone else's spawner!" to player
+			cancel event
+			stop
+	#This block under here is to delete the gen variables if the owner is removing it
+	loop {mobgens::gens::%player's uuid%::*}:
+		set {_loc} to location of target block
+		#Checks if the loop value is the block being broken
+		if "%loop-value%" = "%location of target block%":
+			#gives back the block
+			set {_mob} to "%{mobgens::types::%player's uuid%::%{_loc}%}%"
+			if {_mob} = "cow":
+				if player can't hold netherite block named "&b&lMaxSpawner" with lore "&f- Cow Spawner":
+					send "{@prefix} &cYou don't have enough inventory space!" to player
+					cancel event
+					stop
+				give player netherite block named "&b&lMaxSpawner" with lore "&f- Cow Spawner"
+			if {_mob} = "pig":
+				if player can't hold diamond block named "&b&lMaxSpawner" with lore "&f- Pig Spawner":
+					send "{@prefix} &cYou don't have enough inventory space!" to player
+					cancel event
+					stop
+				give player diamond block named "&b&lMaxSpawner" with lore "&f- Pig Spawner"
+			if {_mob} = "sheep":
+				if player can't hold gold block named "&b&lMaxSpawner" with lore "&f- Sheep Spawner":
+					send "{@prefix} &cYou don't have enough inventory space!" to player
+					cancel event
+					stop
+				give player gold block named "&b&lMaxSpawner" with lore "&f- Sheep Spawner"
+			if {_mob} = "chicken":
+				if player can't hold iron block named "&b&lMaxSpawner" with lore "&f- Chicken Spawner":
+					send "{@prefix} &cYou don't have enough inventory space!" to player
+					cancel event
+					stop
+				give player iron block named "&b&lMaxSpawner" with lore "&f- Chicken Spawner"
+			send "{@prefix} &aSuccessfully removed &f%{mobgens::types::%player's uuid%::%{_loc}%}% &aMaxSpawner!" to player
+			#deletes the variables bound to the player and location
+			delete {mobgens::types::%player's uuid%::%location of target block%}
+			remove location of target block from {mobgens::gens::%player's uuid%::*}
+			delete {mobgens::locations::%{_loc}%}
+			set target block to air
+			exit loop
+
+#Checks if block is gen
+on block break:
+	if {mobgens::locations::%location of target block%} is set:
+		send "{@prefix} &cUse shift left click to remove a gen!" to player
+		cancel event
+
+
+#LOOP
+on join:
+	# This here starts a loop while the player is online to generate animals
+	#It makes sure to check the player is online a few times due to it also having a delay
+	while player is online:
+		stop if player is not online
+		loop {mobgens::gens::%player's uuid%::*}:
+			set {_loc} to loop-value
+			#This is to make sure that animal spawns on top of the block and not in it
+			add 1 to y location of {_loc}
+			#This parses the text of the mob type as an actual animal
+			set {_mob} to {mobgens::types::%player's uuid%::%loop-value%} parsed as entitytype
+			spawn {_mob} at {_loc}
+		wait 2 minutes #!-- CHANGE DURATION HERE --!#
+		stop if player is not online
+
+#!!ADD REWARDS HERE:
+#!-- START REWARDS --!#
+
+		#Could be whatever, check death, sell drops etc
+
+#!-- END REWARDS --!#
+on tab complete of "givegen":
+	set tab completions for position 1 to all players
+	set tab completions for position 2 to "cow", "chicken", "sheep" and "pig"

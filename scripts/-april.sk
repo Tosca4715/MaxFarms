@@ -1,0 +1,31 @@
+every 8 seconds:
+    set {_i} to a random integer between 0 and 8
+    if {_i} = 1:
+        loop all players:
+            play sound "entity.creeper.primed" with volume 1 to all players
+            wait 30 ticks
+            send action bar "&a&lHah gottem" to all players
+    if {_i} = 2:
+        loop all players:
+            loop 2 times:
+                wait 4 ticks
+                strike lightning at location of loop-player    
+            send action bar "&c&lget fooled bro!" to loop-player
+    if {_i} = 3:
+        send action bar "&d&lLittle is secretly in love with &b&ltesco!" to all players
+    if {_i} = 4:
+        loop all players:
+            send action bar "&c&lIm running out of ideas!" to loop-player
+            damage loop-player by 1 heart
+    if {_i} = 5:
+        send action bar "&l&a&lnever gonna give you up never gonna let you down!" to all players
+    if {_i} = 6:
+        loop all players:
+            summon 1 skeleton at location of loop-player 
+            set name of last spawned entity to "&c&lYOU"
+            send action bar "&a&llook behind you!" to loop-player
+            wait 5 seconds
+            kill last spawned entity
+    if {_i} = 7:
+        send action bar "&c&lstaff their hobby is to bully you!!" to all players
+        

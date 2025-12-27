@@ -1,0 +1,4 @@
+on right click:
+  if name of player's held item is "&6Infinite &1Water!":
+    wait 2 ticks
+    set player's held item to 1 water bucket named "&6Infinite &1Water!"

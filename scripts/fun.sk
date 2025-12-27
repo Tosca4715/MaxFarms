@@ -1,0 +1,48 @@
+#kill stick
+#command /deathstick:
+	#permission:death.stick
+	#permission message:&c&lYou are not prepared for this kind of POWER
+	#trigger:
+	#	give player 1 stick named "&4Death Sentence"
+
+#on rightclick:
+	#if player's held item is stick named "&4Death Sentence":
+	#	make the player shoot a arrow at speed 600
+
+#on damage:
+	#if name of attacker's tool is "&4Death Sentence":
+	#	damage victim by 8.5 hearts
+
+#on damage:			
+	#if victim's held item is stick named "&4Death Sentence":
+	#	cancel event
+   #fun health stuff
+
+
+#every 10 seconds:
+  #strike lightning at location(99, 103, 261, world "mf17")
+  #wait 1 second
+  #strike lightning at location(99, 103, 261, world "mf17")
+		
+#command /rik:
+ # permission: *
+  #trigger:
+  #  set {rik} to stick of efficiency 1 named "&cRiks Lightning Stick" with lore "&cRight click to summon lightning!"
+   # give {rik} to player 
+
+#on right click:
+  #if player's held item is {rik}:
+  #  if difference between {cooldow::%player%} and now < 1 minute:  
+   #   send "&cOn cooldown &7(1 Minute)"
+   #   stop
+  #  else if difference between {cooldow::%player%} and now < 0 seconds:
+ #     delete {cooldow::%player%}
+   # else:
+   #   strike lightning at targeted block
+   #   send "&aRik's evil laugh can be heard in the distance" to player
+   #   wait 1 second
+    #  strike lightning at targeted block
+    #  set {cooldow::%player%} to now
+
+
+	

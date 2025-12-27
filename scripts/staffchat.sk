@@ -1,0 +1,39 @@
+options:
+  staffchat: &7[&6SC&7] 
+
+command /staff [<text>]:
+	aliases: /sc
+	permission: sc.staffchat
+	trigger:
+		if arg-1 is not set:
+			if executor is console:
+				send "&cThis part of the command is disabled for console!"
+				stop
+			else:	
+				if {staffchat.%player's uuid%} is not set:
+					set {staffchat.%player's uuid%} to true
+					send "{@staffchat} &aEnabled staffchat!"
+					while {staffchat.%player's uuid%} is true:
+						wait 2 seconds 
+						send action bar "&aStaffchat is on!" to player
+				else:
+					delete {staffchat.%player's uuid%}
+					send "{@staffchat} &cDisabled Staffchat"
+		else if arg-1 is set:
+			set {_sender} to player ? Console
+			loop all players:
+				if loop-player has permission "sc.staffchat":
+					send "{@staffchat} %player's prefix%&f%{_sender}% %player's suffix% &7<> &r%arg-1%" to loop-player
+on chat:
+	if {staffchat.%player's uuid%} is true:
+		cancel event
+		send "{@staffchat} %player's prefix%&f%player% %player's suffix% &7<> &r%message%" to console
+		loop all players:
+			if loop-player has permission "sc.staffchat":
+				send "{@staffchat} %player's prefix%&f%player% %player's suffix% &7<> &r%message%" to loop-player
+
+
+
+		
+on disconnect:
+	delete {staffchat.%player's uuid%}

@@ -1,0 +1,268 @@
+options:
+	prefix: &8[&f&lMax&a&lFarms&8] &8[&6Harvester&8]&f
+	money: &4Insufficient Money
+
+on join: 
+	if {badpeople::*} contains player's uuid:
+		kick player 
+		ban player
+
+on load:
+	set {newharvester} to netherite hoe named "&6Harvester"
+	set line 1 of lore of {newharvester} to ""
+	set line 2 of lore of {newharvester} to "&a > &2Replants Broken Crops"
+	set line 3 of lore of {newharvester} to "&a > &fWheat, Potatoes, Carrots, and Netherwart"
+	set line 4 of lore of {newharvester} to "&a > &fRight Click &7to Sell Inventory"
+	set line 5 of lore of {newharvester} to "&a > &fShift + Right Click &7to Open Menu"
+
+	set {bind} to book named "&fBroken Crops Bind to Inventory" with lore "&aLevel 0/1 &7- &a$10M"
+	enchant {bind} with curse of binding
+	set {bindmax} to book named "&cBroken Crops Bind to Inventory" with lore "&cMax Level 1/1"
+	enchant {bindmax} with curse of binding
+
+	set {fort1} to book named "&a+1 &fDrop for Every Level of Fortune" with lore "&aLevel 0/3 &7- &a$50M"
+	enchant {fort1} with fortune
+	set {fort2} to book named "&a+1 &fDrop for Every Level of Fortune" with lore "&aLevel 1/3 &7- &a$100M"
+	enchant {fort2} with fortune 2
+	set {fort3} to book named "&a+1 &fDrop for Every Level of Fortune" with lore "&aLevel 2/3 &7- &a$150M"
+	enchant {fort3} with fortune 3
+	set {fortmax} to book named "&c+1 Drop for Every Level of Fortune" with lore "&cMax Level 3/3"
+	enchant {fortmax} with fortune 3
+
+	set {swep1} to book named "&fAge of Replanted Crop" with lore "&aLevel 0/3 &7- &a$10M"
+	enchant {swep1} with sweeping edge
+	set {swep2} to book named "&fAge of Replanted Crop" with lore "&aLevel 1/3 &7- &a$20M"
+	enchant {swep2} with sweeping edge 2
+	set {swep3} to book named "&fAge of Replanted Crop" with lore "&aLevel 2/3 &7- &a$30M"
+	enchant {swep3} with sweeping edge 3
+	set {swepmax} to book named "&cAge of Replanted Crop" with lore "&cMax Level 3/3"
+	enchant {swepmax} with sweeping edge 3
+
+	set {mend} to book named "&fGain XP While Using &6Harvester" with lore "&aLevel 0/1 &7- &a$5M"
+	enchant {mend} with mending
+	set {mendmax} to book named "&cGain XP While Using &6Harvester" with lore "&cMax Level 1/1"
+	enchant {mendmax} with mending
+
+on enchant:
+	if event-item is netherite hoe named "&6Harvester":
+		send "{@prefix} &6Harvester &ccan not &fbe enchanted. "
+		cancel event
+		
+		
+function enchant(p: player, enchant: object, cost: number):
+	if balance of {_p} is greater than {_cost}:
+		remove {_cost} from balance of {_p}
+		enchant {_p}'s tool with {_enchant}
+		upgradesharvester({_p})
+	else:
+		send "{@money}" to {_p}
+
+function upgradesharvester(p: player):
+	set metadata tag "harverster" of {_p} to chest inventory with 1 row named "&6Harvester &3Menu"
+	set {_current} to tool of {_p}
+	set slot 4 of metadata tag "harverster" of {_p} to {_current}
+	set slot 0 and 8 of metadata tag "harverster" of {_p} to cyan stained glass pane named " "
+	set slot 3 and 5 of metadata tag "harverster" of {_p} to cyan stained glass pane named " "
+	if tool of  {_p} is enchanted with curse of binding:
+		set slot 1 of metadata tag "harverster" of {_p} to {bindmax}
+	else:
+		set slot 1 of metadata tag "harverster" of {_p} to {bind} 
+	set {_f} to level of fortune of tool of {_p}
+	if {_f} is 3:
+		set slot 2 of metadata tag "harverster" of {_p} to {fortmax}
+	else if {_f} is 2:
+		set slot 2 of metadata tag "harverster" of {_p} to {fort3} 
+	else if {_f} is 1:
+		set slot 2 of metadata tag "harverster" of {_p} to {fort2}
+	else:
+		set slot 2 of metadata tag "harverster" of {_p} to {fort1} 
+	set {_s} to level of sweeping edge of tool of {_p}
+	if {_s} is 3:
+		set slot 6 of metadata tag "harverster" of {_p} to {swepmax}
+	else if {_s} is 2:
+		set slot 6 of metadata tag "harverster" of {_p} to {swep3} 
+	else if {_s} is 1:
+		set slot 6 of metadata tag "harverster" of {_p} to {swep2} 
+	else:
+		set slot 6 of metadata tag "harverster" of {_p} to {swep1} 
+	if tool of {_p} is enchanted with mending:
+		set slot 7 of metadata tag "harverster" of {_p} to {mendmax}
+	else:
+		set slot 7 of metadata tag "harverster" of {_p} to {mend} 
+	open metadata tag "harverster" of {_p} to {_p}
+
+
+
+
+on inventory click:
+	if name of player's inventory is "&6Harvester &3Menu":
+		cancel event
+		if clicked slot is 1:
+			enchant(player, curse of binding, 10000000)
+		else if clicked slot is 2:
+			set {_f} to level of fortune of tool of player
+			if {_f} is 3:
+				stop
+			else if {_f} is 2:
+				enchant(player, fortune 3, 150000000)
+			else if {_f} is 1:
+				enchant(player, fortune 2, 100000000)
+			else if {_f} is not set:
+				enchant(player, fortune, 50000000)
+		else if clicked slot is 6:
+			set {_s} to level of sweeping edge of tool of player
+			if {_s} is 3:
+				stop
+			else if {_s} is 2:
+				enchant(player, sweeping edge 3, 30000000)
+			else if {_s} is 1:
+				enchant(player, sweeping edge 2, 20000000)
+			else if {_s} is not set:
+				enchant(player, sweeping edge, 10000000)
+		else if clicked slot is 7:
+			if tool of player is enchanted with mending:
+				stop
+			else:
+				enchant(player, mending, 5000000)
+
+
+
+
+
+
+
+on right click:
+	if name of player's tool is "&6Harvester":
+		cancel event
+		if player is sneaking:
+			upgradesharvester(player)
+		else:
+			set {soldItems::%player's name%} to 0
+			set {earnings::%player's name%} to 0
+			loop all items in player's inventory:
+				set {_amount} to item amount of loop-item
+				set {_n} to 0
+				loop {sblocks::*}:
+					add 1 to {_n}
+					if loop-value-2 is loop-item:
+						add {_amount} to {soldItems::%player's name%}
+						add GetBlockPrice({_n}) * {rebirth.%player's uuid%} * {_amount} to {earnings::%player's name%} 
+						remove loop-item from player's inventory
+			if {soldItems::%player's name%} is more than 0:
+				send action bar "&3Items Sold: &a+$%{earnings::%player's name%}%" to player
+				add {earnings::%player's name%} to player's balance
+				clear {earnings::%player's name%}
+				clear {soldItems::%player's name%}
+			else:
+				send action bar "{@prefix} &cInventory empty" to player
+
+#==== harvester ====
+on block break:
+	if name of player's tool is "&6Harvester":
+		set {_f} to level of fortune of player's tool
+		set {_s} to level of sweeping edge of player's tool
+		if {_f} is "<none>":
+			set {_f} to 0
+		add 3 to {_f}
+		if event-block is wheat[age=7]:
+			if player's tool is enchanted with mending:
+				drop 2 xp at player's location
+			if {_s} is 1:
+				set event-block to stage 2 wheat plant
+			else if {_s} is 2:
+				set event-block to stage 3 wheat plant
+			else if {_s} is 3:
+				set event-block to stage 4 wheat plant
+			else:
+				set event-block to freshly planted wheat plant
+			cancel event
+			if player's tool is enchanted with curse of binding:
+				if player's inventory can't hold {_f} of seeds:
+					send "{@prefix} &cFull Inventory" to player
+					drop {_f} of wheat at event-location
+					drop 3 seeds at event-location
+				else:
+					give player {_f} of wheat
+					give player 3 seeds
+			else:
+				drop {_f} of wheat at event-location
+				drop 3 seeds at event-location
+
+		else if event-block is potatoes[age=7]:
+			if player's tool is enchanted with mending:
+				drop 2 xp at player's location
+			if {_s} is 1:
+				set event-block to stage 2 potato plant
+			else if {_s} is 2:
+				set event-block to stage 3 potato plant
+			else if {_s} is 3:
+				set event-block to stage 4 potato plant
+			else:
+				set event-block to freshly planted potato plant
+			cancel event
+			if player's tool is enchanted with curse of binding:
+				if player's inventory can't hold {_f} of potato:
+					send "{@prefix} &cFull Inventory" to player
+					drop {_f} of potato at event-location
+				else:
+					give player {_f} of potato
+			else:
+				drop {_f} of potato at event-location
+
+		else if event-block is carrots[age=7]:
+			if player's tool is enchanted with mending:
+				drop 2 xp at player's location
+			if {_s} is 1:
+				set event-block to stage 2 carrot plant
+			else if {_s} is 2:
+				set event-block to stage 3 carrot plant
+			else if {_s} is 3:
+				set event-block to stage 4 carrot plant
+			else:
+				set event-block to freshly planted carrot plant
+			cancel event
+			if player's tool is enchanted with curse of binding:
+				if player's inventory can't hold {_f} of carrot:
+					send "{@prefix} &cFull Inventory" to player
+					drop {_f} of carrot at event-location
+				else:
+					give player {_f} of carrot
+			else:
+				drop {_f} of carrot at event-location
+		
+		else if event-block is nether wart[age=3]:
+			if player's tool is enchanted with mending:
+				drop 2 xp at player's location
+			if player's tool is enchanted with sweeping edge 3:
+				set event-block to stage 2 nether wart plant
+			else:
+				set event-block to freshly planted nether wart plant
+			cancel event
+			if player's tool is enchanted with curse of binding:
+				if player's inventory can't hold {_f} of nether wart:
+					send "{@prefix} &cFull Inventory" to player
+					drop {_f} of nether wart at event-location
+				else:
+					give player {_f} of nether wart
+			else:
+				drop {_f} of nether wart at event-location
+		else:
+			cancel event
+		if event-block is beetroots[age=3]:
+			if player's tool is enchanted with mending:
+				drop 2 xp at player's location
+			if player's tool is enchanted with sweeping edge 3:
+				set event-block to stage 2 beetroot plant
+			else:
+				set event-block to freshly planted beetroot plant
+			cancel event
+			if player's tool is enchanted with curse of binding:
+				if player's inventory can't hold {_f} of beetroot:
+					send "{@prefix} &cFull Inventory" to player
+					drop {_f} of nether wart at event-location
+				else:
+					give player {_f} of beetroot
+			else:
+				drop {_f} of beetroot at event-location
+		else:
+			cancel event

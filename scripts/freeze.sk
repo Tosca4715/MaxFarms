@@ -1,0 +1,35 @@
+#freeze
+command /freeze <player>:
+	usage: &c/freeze (player)
+	permission: freeze.custom
+	trigger:
+		if arg-1 has permission "freeze.nope":
+			send "&cYou cannot freeze that player!"
+			stop
+		else if {freeze.arg-1's uuid} is not set:
+			send action bar "&cYou have frozen %arg-1%" to player
+			send action bar "&c&lYou have been frozen by %player%" to arg-1
+			set arg-1's walk speed to 0 
+			apply jump boost 127 without any particles to arg-1 for 9999 days 
+			make arg-1 execute command "/fly disable"
+			set {freeze.arg-1's uuid} to true
+			set {frozen} to arg-1's name
+			stop
+		else:
+			send action bar "&aUnfroze %arg-1%" to player
+			send action bar "&a&lYou have been unfrozen! by %player%" to arg-1
+			remove jump boost from arg-1
+			set arg-1's walk speed to 0.2
+			delete {freeze.arg-1's uuid}
+			delete {frozen}
+
+
+
+
+on command:
+	if {freeze.arg-1's uuid} is true:
+		if {frozen} is player's name:
+			send action bar "&cYou're frozen! can't do that currently!" to player
+			cancel the event
+		else:
+			stop
